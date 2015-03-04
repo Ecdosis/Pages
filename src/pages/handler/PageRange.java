@@ -7,11 +7,13 @@
 package pages.handler;
 
 /**
- * A page range is an offsent and length within plain text
+ * A page range is an offset and length within plain text
  * @author desmond
  */
 public class PageRange {
+    /** offset into document bytes */
     int offset;
+    /** length of page text in bytes */
     int length;
     /**
      * Create a page range

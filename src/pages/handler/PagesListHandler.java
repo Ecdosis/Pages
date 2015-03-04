@@ -47,19 +47,9 @@ public class PagesListHandler extends PagesGetHandler
                     for ( int i=0;i<ranges.size();i++ )
                     {
                         JSONObject range = (JSONObject)ranges.get(i);
-                        JSONArray annotations = (JSONArray)range.get(JSONKeys.ANNOTATIONS);
-                        if ( annotations != null )
-                        {
-                            for ( int j=0;j<annotations.size();j++ )
-                            {
-                                JSONObject jobj = (JSONObject)annotations.get(j);
-                                if ( jobj.containsKey(JSONKeys.FACS) )
-                                {
-                                    list.add( imageId((String)jobj.get(JSONKeys.FACS)));
-                                    break;
-                                }
-                            }
-                        }
+                        String facs = getFacs( range );
+                        if ( facs != null )
+                            list.add( imageId(facs) );
                     }
                     text = list.toJSONString();
                 }

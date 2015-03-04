@@ -36,6 +36,26 @@ import pages.constants.JSONKeys;
  */
 public class PagesGetHandler extends GetHandler {
     /**
+     * Get the facs attribute for the given range
+     * @param range the range
+     * @return its FACS (facsimile) value or null if absent
+     */
+    protected String getFacs( JSONObject range )
+    {
+        JSONArray annotations = (JSONArray)range.get(JSONKeys.ANNOTATIONS);
+        if ( annotations != null )
+        {
+            for ( int j=0;j<annotations.size();j++ )
+            {
+                JSONObject jobj = (JSONObject)annotations.get(j);
+                if ( jobj.containsKey(JSONKeys.FACS) )
+                    return (String)jobj.get(JSONKeys.FACS);
+            }
+        }
+        // shouldn't happen
+        return null;
+    }
+    /**
      * Get a page range as an offset and length of the underlying text
      * @param docid the document containing the specified page
      * @param pageid the id of the page or null
@@ -74,7 +94,7 @@ public class PagesGetHandler extends GetHandler {
                     for ( int i=0;i<ranges.size();i++ )
                     {
                         range = (JSONObject)ranges.get(i);
-                        String id = imageId((String)range.get(JSONKeys.FACS));
+                        String id = imageId( getFacs(range) );
                         Number len = (Number)range.get(JSONKeys.LEN);
                         if ( len == null )
                             throw new Exception("missing length of range!");

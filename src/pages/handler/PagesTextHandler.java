@@ -55,11 +55,13 @@ public class PagesTextHandler extends PagesGetHandler {
                 PageRange pr = getPageRange( docid, pageid, vPath );
                 AeseVersion version = doGetResourceVersion( Database.CORTEX, 
                     docid, vPath );
-                String text = version.getVersionString();
-                text = text.substring( pr.offset, pr.end() );
+                byte[] text = version.getVersion();
+                byte[] chunk = new byte[pr.length];
+                System.arraycopy(text, pr.offset, chunk, 0, pr.length);
+                String str = new String( chunk, version.getEncoding() );
                 response.setContentType("text/plain;charset="
                     +version.getEncoding());
-                response.getWriter().println(text);
+                response.getWriter().println(str);
             }
             else
                 throw new Exception("Missing docid or not found="+docid);

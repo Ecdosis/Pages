@@ -46,7 +46,7 @@ public class PagesImageHandler extends PagesGetHandler {
                 response.getWriter().println(path);
             }
             else
-                throw new Exception("missing docidor pageid");
+                throw new Exception("missing docid or pageid");
         }
         catch ( Exception e )
         {
