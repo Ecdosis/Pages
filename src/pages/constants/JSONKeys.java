@@ -15,19 +15,19 @@
  *  along with TILT.  If not, see <http://www.gnu.org/licenses/>.
  *  (c) copyright Desmond Schmidt 2014
  */
-package pages.handler;
-import pages.exception.PagesException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+
+package pages.constants;
 
 /**
- * Abstract super-class for all handlers: PUT, POST, DELETE, GET
- * @author ddos
+ *
+ * @author desmond
  */
-abstract public class PagesHandler 
-{
-    protected String encoding;
-    
-    public abstract void handle( HttpServletRequest request, 
-        HttpServletResponse response, String urn ) throws PagesException;
+public class JSONKeys {
+    public static final String FORMAT = "format";
+    public static final String RANGES = "ranges";
+    public static final String FACS = "facs";
+    public static final String RELOFF = "reloff";
+    public static final String LEN = "len";
+    public static final String ANNOTATIONS = "annotations";
 }

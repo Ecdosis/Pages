@@ -16,16 +16,14 @@
  *  (c) copyright Desmond Schmidt 2014
  */
 
+
 package pages.constants;
 
 /**
- * Parameters passed to the service
+ * Formats of Cortex documents
  * @author desmond
  */
-public class Params {
-    public final static String DOCID = "docid";
-    public final static String PAGEID ="pageid";
-    public final static String TITLE = "title";
-    /** mvd version+groups for version 1 */
-    public final static String VERSION1 = "version1";
+public class Formats {
+    public static final String MVD_TEXT = "MVD/TEXT";
+    public static final String LINK = "LINK";
 }

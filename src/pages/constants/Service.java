@@ -30,4 +30,5 @@ public class Service
     public static final String TEXT = "text";
     public static final String HTML = "html";
     public static final String IMAGE = "image";
+    public static final String LIST = "list";
 }

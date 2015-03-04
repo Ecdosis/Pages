@@ -16,12 +16,13 @@
  *  (c) copyright Desmond Schmidt 2014
  */
 package pages.exception;
+import calliope.core.exception.CalliopeException;
 
 /**
  * Specific exception classes 
  * @author desmond
  */
-public class PagesException extends Exception
+public class PagesException extends CalliopeException
 {
     /**
      * Create a general TiltException from scratch

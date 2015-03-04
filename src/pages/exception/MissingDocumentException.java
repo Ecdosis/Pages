@@ -15,17 +15,28 @@
  *  along with TILT.  If not, see <http://www.gnu.org/licenses/>.
  *  (c) copyright Desmond Schmidt 2014
  */
-
-package pages.constants;
+package pages.exception;
 
 /**
- * Parameters passed to the service
+ * Specific exception classes 
  * @author desmond
  */
-public class Params {
-    public final static String DOCID = "docid";
-    public final static String PAGEID ="pageid";
-    public final static String TITLE = "title";
-    /** mvd version+groups for version 1 */
-    public final static String VERSION1 = "version1";
+public class MissingDocumentException extends PagesException
+{
+    /**
+     * Create a general TiltException from scratch
+     * @param message the message it is to bear
+     */
+    public MissingDocumentException( String message )
+    {
+        super( message );
+    }
+    /**
+     * Wrapper for another exception
+     * @param e the other exception
+     */
+    public MissingDocumentException( Exception e )
+    {
+        super( e );
+    }
 }

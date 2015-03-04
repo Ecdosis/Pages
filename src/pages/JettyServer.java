@@ -18,12 +18,14 @@
 
 package pages;
 
+import calliope.core.database.Connector;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import java.io.IOException;
+import calliope.core.database.Repository;
 import pages.constants.Service;
 import pages.handler.PagesGetHandler;
 import pages.exception.PagesException;
@@ -90,24 +92,34 @@ public class JettyServer extends AbstractHandler
         boolean sane = true;
         wsPort = 8083;
         host = "localhost";
-        for ( int i=0;i<args.length;i++ )
+        try
         {
-            if ( args[i].charAt(0)=='-' && args[i].length()==2 )
+            for ( int i=0;i<args.length;i++ )
             {
-                if ( args.length>i+1 )
+                if ( args[i].charAt(0)=='-' && args[i].length()==2 )
                 {
-                    if ( args[i].charAt(1) == 'h' )
-                        host = args[i+1];
-                    else if ( args[i].charAt(1) == 'w' )
-                        wsPort = Integer.parseInt(args[i+1]);
+                    if ( args.length>i+1 )
+                    {
+                        if ( args[i].charAt(1) == 'h' )
+                            host = args[i+1];
+                        else if ( args[i].charAt(1) == 'w' )
+                            wsPort = Integer.parseInt(args[i+1]);
+                        else
+                            sane = false;
+                    } 
                     else
                         sane = false;
-                } 
-                else
-                    sane = false;
+                }
+                if ( !sane )
+                    break;
             }
-            if ( !sane )
-                break;
+            Connector.init( Repository.MONGO, PagesWebApp.user, 
+                PagesWebApp.password, host, 8083, wsPort, "/var/www" );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace( System.out );
+                sane = false;
         }
         return sane;
     }
