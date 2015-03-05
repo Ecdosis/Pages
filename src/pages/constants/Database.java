@@ -26,4 +26,5 @@ public class Database {
     public static String CORCODE = "corcode";
     public static String CORTEX = "cortex";
     public static String CORPIX = "corpix";
+    public static String CORFORM = "corform";
 }

@@ -16,17 +16,6 @@
  *  (c) copyright Desmond Schmidt 2014
  */
 package pages;
-import java.awt.image.WritableRaster;
-import java.util.Iterator;
-import java.util.ArrayList;
-import java.awt.Point;
-import java.awt.geom.PathIterator;
-import java.awt.image.Raster;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferInt;
-import java.awt.image.DataBufferShort;
-import java.awt.image.DataBufferUShort;
 
 
 /**
@@ -117,5 +106,16 @@ public class Utils
             path = path.substring( pos+1 );
         return path;
     }
-    
+    /**
+     * Remove the rightmost segment of the path and resource
+     * @return the remains of the path
+     */
+    public static String chomp( String path )
+    {
+        String popped = "";
+        int index = path.lastIndexOf( "/" );
+        if ( index != -1 )
+            popped = path.substring( 0, index );
+        return popped;
+    }
 }

@@ -52,9 +52,10 @@ public class PagesTextHandler extends PagesGetHandler {
             if ( docid != null )
             {
                 // pageid and vPath can be null
-                PageRange pr = getPageRange( docid, pageid, vPath );
                 AeseVersion version = doGetResourceVersion( Database.CORTEX, 
                     docid, vPath );
+                PageRange pr = getPageRange( docid, pageid, vPath, 
+                    version.getEncoding() );
                 byte[] text = version.getVersion();
                 byte[] chunk = new byte[pr.length];
                 System.arraycopy(text, pr.offset, chunk, 0, pr.length);

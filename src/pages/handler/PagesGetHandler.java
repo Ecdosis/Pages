@@ -60,10 +60,11 @@ public class PagesGetHandler extends GetHandler {
      * @param docid the document containing the specified page
      * @param pageid the id of the page or null
      * @param vPath the version to look for or null
+     * @param encoding the encoding of the data the page range points to
      * @return a page range object
      */
-    public PageRange getPageRange( String docid, String pageid, String vPath ) 
-        throws PagesException
+    public PageRange getPageRange( String docid, String pageid, String vPath, 
+        String encoding ) throws PagesException
     {
         try
         {
@@ -106,7 +107,7 @@ public class PagesGetHandler extends GetHandler {
                             offset += len.intValue();
                     }
                 }
-                return new PageRange( offset, pageLen );
+                return new PageRange( offset, pageLen, encoding );
             }
             else
                 throw new Exception("Missing ranges in pages resource");

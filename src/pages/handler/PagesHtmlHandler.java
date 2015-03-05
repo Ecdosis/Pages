@@ -20,14 +20,19 @@
 package pages.handler;
 
 import calliope.core.handler.AeseVersion;
+import calliope.core.database.Connector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import pages.constants.Database;
 import pages.constants.Params;
+import pages.constants.Formats;
 import pages.constants.JSONKeys;
 import pages.exception.MissingDocumentException;
 import pages.exception.PagesException;
+import pages.Utils;
 import calliope.AeseFormatter;
+import calliope.exception.AeseException;
+import calliope.core.URLEncoder;
 import org.json.simple.*;
 import calliope.json.JSONResponse;
 import pages.exception.NativeException;
@@ -36,6 +41,60 @@ import pages.exception.NativeException;
  * @author desmond
  */
 public class PagesHtmlHandler extends PagesGetHandler {
+    /**
+     * Get the document body of the given urn or null
+     * @param db the database where it is
+     * @param docID the docID of the resource
+     * @return the document body or null if not present
+     */
+    private static String getDocumentBody( String db, String docID ) 
+        throws AeseException
+    {
+        try
+        {
+            String jStr = Connector.getConnection().getFromDb(db,docID);
+            if ( jStr != null )
+            {
+                JSONObject jDoc = (JSONObject)JSONValue.parse( jStr );
+                if ( jDoc != null )
+                {
+                    Object body = jDoc.get( JSONKeys.BODY );
+                    if ( body != null )
+                        return body.toString();
+                }
+            }
+            throw new AeseException("document "+db+"/"+docID+" not found");
+        }
+        catch ( Exception e )
+        {
+            throw new AeseException( e );
+        }
+    }
+    /**
+     * Fetch a single style text
+     * @param style the path to the style in the corform database
+     * @return the text of the style
+     */
+    public static String fetchStyle( String style ) throws AeseException
+    {
+        // 1. try to get each literal style name
+        String actual = getDocumentBody(Database.CORFORM,style);
+        while ( actual == null )
+        {
+            // 2. add "default" to the end
+            actual = getDocumentBody( Database.CORFORM,
+                URLEncoder.append(style,Formats.DEFAULT) );
+            if ( actual == null )
+            {
+                // 3. pop off last path component and try again
+                if ( style.length()>0 )
+                    style = Utils.chomp(style);
+                else
+                    throw new AeseException("no suitable format");
+            }
+        }
+        return actual;
+    }
     public void handle( HttpServletRequest request, 
         HttpServletResponse response, String urn ) throws PagesException
     {
@@ -52,13 +111,17 @@ public class PagesHtmlHandler extends PagesGetHandler {
                 // just get the basic corcode
                 AeseVersion corcode = doGetResourceVersion( Database.CORCODE,
                     docid+"/default", vPath );
-                PageRange pr = getPageRange( docid, pageid, vPath );
+                PageRange pr = getPageRange( docid, pageid, vPath, 
+                    version.getEncoding() );
                 // format the text using the default corcode
                 String[] corCodes = new String[1];
                 corCodes[0] = corcode.getVersionString();
                 JSONObject defaultCC = (JSONObject)JSONValue.parse(corCodes[0]);
                 String[] styles = new String[1];
-                styles[0] = (String)defaultCC.get(JSONKeys.FORMAT);
+                String styleName = (String)defaultCC.get(JSONKeys.STYLE);
+                if ( styleName == null )
+                    styleName = "TEI/default";
+                styles[0] = fetchStyle( styleName );
                 String[] formats = new String[1];
                 formats[0] = "STIL";
                 JSONResponse html = new JSONResponse(JSONResponse.HTML);
@@ -68,7 +131,8 @@ public class PagesHtmlHandler extends PagesGetHandler {
                     throw new NativeException("html formatting failed");
                 else
                 {
-                    HTMLSelector hs = new HTMLSelector( html.getBody() );
+                    HTMLSelector hs = new HTMLSelector( html.getBody(),
+                        version.getEncoding() );
                     response.setContentType("text/plain;charset="
                         +version.getEncoding());
                     response.getWriter().println(hs.getPage(pr));

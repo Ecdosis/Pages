@@ -30,4 +30,6 @@ public class JSONKeys {
     public static final String RELOFF = "reloff";
     public static final String LEN = "len";
     public static final String ANNOTATIONS = "annotations";
+    public static final String BODY = "body";
+    public static final String STYLE = "style";
 }

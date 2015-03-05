@@ -78,7 +78,7 @@ public class JettyServer extends AbstractHandler
             sb.append("<p>");
             sb.append(te.getMessage());
             sb.append("</p>");
-            response.getOutputStream().println(sb.toString());
+            //response.getOutputStream().println(sb.toString());
             te.printStackTrace(System.out);
         }
     }

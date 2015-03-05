@@ -15,15 +15,19 @@ public class PageRange {
     int offset;
     /** length of page text in bytes */
     int length;
+    /** encoding of the data the page range points to */
+    String encoding;
     /**
      * Create a page range
      * @param offset offset within  the base plain text
      * @param length length of the page in textual characters
+     * @param encoding the encoding of the string data the pr points to
      */
-    public PageRange( int offset, int length )
+    public PageRange( int offset, int length, String encoding )
     {
         this.offset = offset;
         this.length = length;
+        this.encoding = encoding;
     }
     /**
      * Get the end offset (one index beyond last char)

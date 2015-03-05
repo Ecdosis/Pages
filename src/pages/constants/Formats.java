@@ -26,4 +26,6 @@ package pages.constants;
 public class Formats {
     public static final String MVD_TEXT = "MVD/TEXT";
     public static final String LINK = "LINK";
+    /** canonical name for default styles and formats */
+    public static final String DEFAULT = "default";
 }
