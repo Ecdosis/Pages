@@ -55,10 +55,10 @@ public class HTMLSelector
      */
     int rightAngleBracketPos( int from )
     {
-        for ( int i=from;i<bytes.length;i++ )
-            if ( bytes[i]=='>')
+        for ( int i=from;i<src.length();i++ )
+            if ( src.charAt(i)=='>')
                 return i+1;
-        return bytes.length;
+        return src.length();
     }
     /**
      * Compose a start tag
@@ -69,16 +69,7 @@ public class HTMLSelector
     {
         int start = n.getStartPosition();
         int rbPos = rightAngleBracketPos(start);
-        byte[] segment = new byte[rbPos-start];
-        System.arraycopy(this.bytes,start,segment,0,segment.length);
-        try
-        {
-            return new String( segment, this.encoding );
-        }
-        catch ( Exception e )
-        {
-            return new String( segment );
-        }
+        return this.src.substring(start,rbPos);
     }
     /**
      * Compose an end-tag

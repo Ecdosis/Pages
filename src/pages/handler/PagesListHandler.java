@@ -53,7 +53,7 @@ public class PagesListHandler extends PagesGetHandler
                     }
                     text = list.toJSONString();
                 }
-                response.setContentType("text/plain;charset=UTF-8");
+                response.setContentType("application/json;charset=UTF-8");
                 response.getWriter().println(text);
             }
             else throw new Exception("Must specify document identifier");
