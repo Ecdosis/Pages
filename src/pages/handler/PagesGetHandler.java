@@ -29,6 +29,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import pages.constants.Database;
 import pages.constants.JSONKeys;
+import java.io.File;
+import java.io.FileInputStream;
 
 /**
  * Handle a GET request for various image types, text, GeoJSON
@@ -153,7 +155,7 @@ public class PagesGetHandler extends GetHandler {
             else if (service.equals(Service.LIST) )
                 new PagesListHandler().handle(request,response,Utils.pop(urn));
             else
-                throw new Exception("Unknown service "+service);
+                    throw new Exception("Unknown service "+service);
         } catch (Exception e) {
             throw new PagesException(e);
         }

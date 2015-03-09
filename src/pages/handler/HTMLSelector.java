@@ -26,6 +26,7 @@ public class HTMLSelector
     int offset;
     String encoding;
     HashSet<String> emptyTags;
+    boolean finished;
     /**
      * Create a HTML selector
      * @param htmlDoc the HTML document
@@ -100,6 +101,7 @@ public class HTMLSelector
         {
             result.append(getEndTag(n));
             writeEndTags( n.getParent() );
+            this.finished = true;
         }
     }
     /**
@@ -189,62 +191,66 @@ public class HTMLSelector
      */
     private void parseNode( Node n, PageRange pr )
     {
-        // 1. n is a text-node, no children
-        if ( n instanceof TextNode )
+        if ( !this.finished )
         {
-            String content = n.getText();
-            int contentLength = byteLength(content,pr.encoding);
-            if ( contentLength+offset <= pr.offset )
-                offset += contentLength;
-            else if ( result == null )
+            // 1. n is a text-node, no children
+            if ( n instanceof TextNode )
             {
-                result = new StringBuilder();
-                writeStartTags(n);
-            }
-            if ( result != null )
-            {
-                if ( offset < pr.offset )
-                {
-                    writeUndershoot( content, pr );
+                String content = n.getText();
+                int contentLength = byteLength(content,pr.encoding);
+                if ( contentLength+offset <= pr.offset )
                     offset += contentLength;
-                }
-                else if ( contentLength+offset < pr.end() )
+                else if ( result == null )
                 {
-                    result.append(content);
-                    offset += contentLength;
-                }
-                else if ( offset < pr.end() )
-                {
-                    writeOvershoot(content,pr);
-                    offset = pr.end();
-                    if ( n.getParent() != null )
-                        writeEndTags(n.getParent());
-                }
-            }
-        }
-        // 2. n is an "element"
-        else if ( n instanceof TagNode )
-        {
-            if ( offset >= pr.offset && offset < pr.end() )
-            {
-                if ( result == null )
                     result = new StringBuilder();
-                if ( isEmptyNode((TagNode)n) )
-                    result.append(getStartTag((TagNode)n));
-                else
+                    writeStartTags(n);
+                }
+                if ( result != null )
                 {
-                    result.append( getStartTag(n) );
-                    if ( n.getFirstChild() != null )
-                        parseNode( n.getFirstChild(), pr );
-                    result.append( getEndTag(n) );
+                    if ( offset < pr.offset )
+                    {
+                        writeUndershoot( content, pr );
+                        offset += contentLength;
+                    }
+                    else if ( contentLength+offset < pr.end() )
+                    {
+                        result.append(content);
+                        offset += contentLength;
+                    }
+                    else if ( offset < pr.end() )
+                    {
+                        writeOvershoot(content,pr);
+                        offset = pr.end();
+                        if ( n.getParent() != null )
+                            writeEndTags(n.getParent());
+                    }
                 }
             }
-            else if ( n.getFirstChild()!=null )
-                parseNode( n.getFirstChild(), pr );
+            // 2. n is an "element"
+            else if ( n instanceof TagNode )
+            {
+                if ( offset >= pr.offset && offset < pr.end() )
+                {
+                    if ( result == null )
+                        result = new StringBuilder();
+                    if ( isEmptyNode((TagNode)n) )
+                        result.append(getStartTag((TagNode)n));
+                    else
+                    {
+                        result.append( getStartTag(n) );
+                        if ( n.getFirstChild() != null )
+                            parseNode( n.getFirstChild(), pr );
+                        if ( !finished )
+                            result.append( getEndTag(n) );
+                    }
+                }
+                else if ( n.getFirstChild()!=null )
+                    parseNode( n.getFirstChild(), pr );
+            }
+            // 3. process siblings of n
+            if ( n.getNextSibling() != null )
+                parseNode( n.getNextSibling(), pr );
         }
-        // 3. process siblings of n
-        if ( n.getNextSibling() != null )
-            parseNode( n.getNextSibling(), pr );
     }
     /**
      * Get part of the HTML's base text surrounded by valid HTML
