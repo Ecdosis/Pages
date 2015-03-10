@@ -170,7 +170,7 @@ public class HTMLSelector
     private void writeUndershoot( String content, PageRange pr )
     {
         int contentLength = byteLength(content,pr.encoding);
-        int undershoot = contentLength+offset-pr.offset;
+        int undershoot = pr.offset-offset;
         String leading = byteSegment( content, undershoot, 
             contentLength-undershoot, pr.encoding );
         result.append( leading );
@@ -203,7 +203,7 @@ public class HTMLSelector
                 else if ( result == null )
                 {
                     result = new StringBuilder();
-                    writeStartTags(n);
+                    writeStartTags(n.getParent());
                 }
                 if ( result != null )
                 {
