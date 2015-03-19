@@ -9,10 +9,14 @@
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesDocumentsHandler.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/constants/Database.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesImageHandler.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/constants/JSONKeys.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesTextHandler.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/JettyServer.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/HTMLSelector.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/constants/Params.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesHandler.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PageDesc.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PageRange.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesListHandler.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/exception/PagesException.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesGetHandler.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/JettyServerThread.java</file>

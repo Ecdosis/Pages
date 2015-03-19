@@ -47,9 +47,13 @@ public class PagesListHandler extends PagesGetHandler
                     for ( int i=0;i<ranges.size();i++ )
                     {
                         JSONObject range = (JSONObject)ranges.get(i);
-                        String facs = getFacs( range );
-                        if ( facs != null )
-                            list.add( imageId(facs) );
+                        String facs = imageId(getFacs(range));
+                        String n = getN(range,i);
+                        if ( facs != null && n !=null )
+                        {
+                            PageDesc ps = new PageDesc(n,facs);
+                            list.add( ps.toJSONObject() );
+                        }
                     }
                     text = list.toJSONString();
                 }

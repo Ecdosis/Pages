@@ -110,7 +110,7 @@ public class PagesWebApp extends HttpServlet
                     host = value;
             }
             Connector.init( repository, user, 
-                password, host, dbPort, wsPort, webRoot );
+                password, host, "calliope", dbPort, wsPort, webRoot );
             target = Utils.pop( target );
             PagesGetHandler handler;
             if ( method.equals("GET") )

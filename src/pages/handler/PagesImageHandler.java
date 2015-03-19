@@ -22,7 +22,6 @@ package pages.handler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import pages.constants.Params;
-import pages.constants.Database;
 import pages.exception.PagesException;
 
 /**
@@ -39,9 +38,10 @@ public class PagesImageHandler extends PagesGetHandler {
             String pageid = request.getParameter(Params.PAGEID);
             if ( docid != null && pageid!= null )
             {
-                // yes the caller can do this him/herself
-                // but not in an application-independent manner
-                String path = "/"+Database.CORPIX+"/"+docid+"/"+pageid;
+                String path = PagesUriTemplateHandler.getUriTemplate(request);
+                path = path.replace("{docid}",docid);
+                // pageid can include doc version,e.g. h080j/123 
+                path = path.replace("{pageid}",pageid);
                 response.setContentType("text/plain;charset=UTF-8");
                 response.getWriter().println(path);
             }

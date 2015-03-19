@@ -29,8 +29,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import pages.constants.Database;
 import pages.constants.JSONKeys;
-import java.io.File;
-import java.io.FileInputStream;
 
 /**
  * Handle a GET request for various image types, text, GeoJSON
@@ -56,6 +54,25 @@ public class PagesGetHandler extends GetHandler {
         }
         // shouldn't happen
         return null;
+    }
+    /**
+     * Get the page number
+     * @param range the page rang eas per STILformat,usually with "n"
+     * @param index the expected page number-1, might be wrong
+     * @return the page number
+     */
+    protected String getN( JSONObject range, int index )
+    {
+        if ( range.containsKey(JSONKeys.N) )
+            return (String)range.get(JSONKeys.N);
+        else if ( range.containsKey(JSONKeys.FACS) )
+        {
+            String facs = (String)range.get(JSONKeys.FACS);
+            for ( int i=0;i<facs.length();i++ )
+                if ( facs.charAt(i)!= '0' )
+                    return facs.substring(i);
+        }
+        return new Integer(index+1).toString();
     }
     /**
      * Get a page range as an offset and length of the underlying text
@@ -154,6 +171,8 @@ public class PagesGetHandler extends GetHandler {
                 new PagesHtmlHandler().handle(request,response,Utils.pop(urn));
             else if (service.equals(Service.LIST) )
                 new PagesListHandler().handle(request,response,Utils.pop(urn));
+            else if (service.equals(Service.URI_TEMPLATE) )
+                new PagesUriTemplateHandler().handle(request,response,Utils.pop(urn));
             else
                     throw new Exception("Unknown service "+service);
         } catch (Exception e) {

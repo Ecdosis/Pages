@@ -37,9 +37,7 @@ import pages.exception.PagesException;
  */
 public class JettyServer extends AbstractHandler
 {
-    static String host;
-    public static int wsPort;
-    /**
+     /**
      * Main entry point
      * @param target the URN part of the URI
      * @param baseRequest 
@@ -90,8 +88,8 @@ public class JettyServer extends AbstractHandler
     static boolean readArgs(String[] args)
     {
         boolean sane = true;
-        wsPort = 8083;
-        host = "localhost";
+        PagesWebApp.wsPort = 8083;
+        PagesWebApp.host = "localhost";
         try
         {
             for ( int i=0;i<args.length;i++ )
@@ -101,9 +99,9 @@ public class JettyServer extends AbstractHandler
                     if ( args.length>i+1 )
                     {
                         if ( args[i].charAt(1) == 'h' )
-                            host = args[i+1];
+                            PagesWebApp.host = args[i+1];
                         else if ( args[i].charAt(1) == 'w' )
-                            wsPort = Integer.parseInt(args[i+1]);
+                            PagesWebApp.wsPort = Integer.parseInt(args[i+1]);
                         else
                             sane = false;
                     } 
@@ -114,7 +112,8 @@ public class JettyServer extends AbstractHandler
                     break;
             }
             Connector.init( Repository.MONGO, PagesWebApp.user, 
-                PagesWebApp.password, host, 8083, wsPort, "/var/www" );
+                PagesWebApp.password, PagesWebApp.host, "calliope", 8083, 
+                PagesWebApp.wsPort, "/var/www" );
         }
         catch ( Exception e )
         {

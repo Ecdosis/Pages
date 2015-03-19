@@ -25,7 +25,7 @@ package pages.constants;
 public class Params {
     public final static String DOCID = "docid";
     public final static String PAGEID ="pageid";
-    public final static String TITLE = "title";
+    public final static String TITLE = "title";   
     /** mvd version+groups for version 1 */
     public final static String VERSION1 = "version1";
 }

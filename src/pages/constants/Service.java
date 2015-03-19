@@ -31,4 +31,5 @@ public class Service
     public static final String HTML = "html";
     public static final String IMAGE = "image";
     public static final String LIST = "list";
+    public static final String URI_TEMPLATE = "uri_template";
 }

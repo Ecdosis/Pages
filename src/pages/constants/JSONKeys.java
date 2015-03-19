@@ -32,4 +32,5 @@ public class JSONKeys {
     public static final String ANNOTATIONS = "annotations";
     public static final String BODY = "body";
     public static final String STYLE = "style";
+    public static final String N = "n";
 }
