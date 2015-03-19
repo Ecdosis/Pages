@@ -42,6 +42,7 @@ public class PagesWebApp extends HttpServlet
     static int dbPort = 27017;
     public static int wsPort = 8080;
     static String webRoot = "/var/www";
+    static boolean inited = false;
     Repository repository = Repository.MONGO;
     /**
      * Safely convert a string to a Repository enum
@@ -87,30 +88,34 @@ public class PagesWebApp extends HttpServlet
         {
             String method = req.getMethod();
             String target = req.getRequestURI();
-            Enumeration params = 
-                getServletConfig().getInitParameterNames();
-            while (params.hasMoreElements()) 
+            if ( !inited )
             {
-                String param = (String) params.nextElement();
-                String value = 
-                    getServletConfig().getInitParameter(param);
-                if ( param.equals("webRoot") )
-                    webRoot = value;
-                else if ( param.equals("dbPort") )
-                    dbPort = getInteger(value,27017);
-                else if (param.equals("wsPort"))
-                    wsPort= getInteger(value,8080);
-                else if ( param.equals("username") )
-                    user = value;
-                else if ( param.equals("password") )
-                    password = value;
-                else if ( param.equals("repository") )
-                    repository = getRepository(value,Repository.MONGO);
-                else if ( param.equals("host") )
-                    host = value;
+                Enumeration params = 
+                    getServletConfig().getInitParameterNames();
+                while (params.hasMoreElements()) 
+                {
+                    String param = (String) params.nextElement();
+                    String value = 
+                        getServletConfig().getInitParameter(param);
+                    if ( param.equals("webRoot") )
+                        webRoot = value;
+                    else if ( param.equals("dbPort") )
+                        dbPort = getInteger(value,27017);
+                    else if (param.equals("wsPort"))
+                        wsPort= getInteger(value,8080);
+                    else if ( param.equals("username") )
+                        user = value;
+                    else if ( param.equals("password") )
+                        password = value;
+                    else if ( param.equals("repository") )
+                        repository = getRepository(value,Repository.MONGO);
+                    else if ( param.equals("host") )
+                        host = value;
+                }
+                Connector.init( repository, user, 
+                    password, host, "calliope", dbPort, wsPort, webRoot );
+                inited = true;
             }
-            Connector.init( repository, user, 
-                password, host, "calliope", dbPort, wsPort, webRoot );
             target = Utils.pop( target );
             PagesGetHandler handler;
             if ( method.equals("GET") )
