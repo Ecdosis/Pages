@@ -41,7 +41,7 @@ public class PagesWebApp extends HttpServlet
     static String password = "jabberw0cky";
     static int dbPort = 27017;
     public static int wsPort = 8080;
-    static String webRoot = "/var/www";
+    public static String webRoot = "/var/www";
     static boolean inited = false;
     Repository repository = Repository.MONGO;
     /**

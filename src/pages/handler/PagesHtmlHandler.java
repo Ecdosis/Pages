@@ -107,7 +107,7 @@ public class PagesHtmlHandler extends PagesGetHandler {
             {
                 AeseVersion version = doGetResourceVersion( Database.CORTEX, 
                     docid, vPath );
-                byte[] text = version.getVersion();
+                char[] text = version.getVersion();
                 // just get the basic corcode
                 AeseVersion corcode = doGetResourceVersion( Database.CORCODE,
                     docid+"/default", vPath );
@@ -125,8 +125,10 @@ public class PagesHtmlHandler extends PagesGetHandler {
                 String[] formats = new String[1];
                 formats[0] = "STIL";
                 JSONResponse html = new JSONResponse(JSONResponse.HTML);
+                /*String text, String[] markup, String[] css, 
+                JSONResponse output*/
                 int res = new AeseFormatter().format( 
-                    text, corCodes, styles, formats, html );
+                    new String(text), corCodes, styles, html );
                 if ( res == 0 )
                     throw new NativeException("html formatting failed");
                 else

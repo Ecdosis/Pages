@@ -56,10 +56,10 @@ public class PagesTextHandler extends PagesGetHandler {
                     docid, vPath );
                 PageRange pr = getPageRange( docid, pageid, vPath, 
                     version.getEncoding() );
-                byte[] text = version.getVersion();
-                byte[] chunk = new byte[pr.length];
+                char[] text = version.getVersion();
+                char[] chunk = new char[pr.length];
                 System.arraycopy(text, pr.offset, chunk, 0, pr.length);
-                String str = new String( chunk, version.getEncoding() );
+                String str = new String( chunk );
                 response.setContentType("text/plain;charset="
                     +version.getEncoding());
                 response.getWriter().println(str);

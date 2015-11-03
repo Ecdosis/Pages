@@ -65,7 +65,7 @@ public class PagesUriTemplateHandler extends PagesGetHandler
             sb.append(":");
             sb.append(port);
         }
-        sb.append("corpix/{docid}/{pageid}");
+        sb.append("/corpix/{docid}/{pageid}");
         return sb.toString();
     }
 }

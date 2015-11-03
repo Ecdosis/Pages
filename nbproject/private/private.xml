@@ -3,24 +3,27 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/Utils.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesAnthologyHandler.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/constants/Service.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/PagesWebApp.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesDocumentsHandler.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/constants/Database.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesImageHandler.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/constants/JSONKeys.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesTextHandler.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/JettyServer.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/HTMLSelector.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/constants/Params.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PageDesc.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PageRange.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesListHandler.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesImageHandler.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/exception/PagesException.java</file>
-            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesGetHandler.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/JettyServerThread.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/constants/Database.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesTextHandler.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/HTMLSelector.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/constants/JSONKeys.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/PagesWebApp.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/Utils.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/JettyServer.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesListHandler.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesDocumentsHandler.java</file>
             <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesHtmlHandler.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PageDesc.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/constants/Params.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesGetHandler.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/PagesUriTemplateHandler.java</file>
+            <file>file:/home/desmond/NetBeansProjects/Pages/src/pages/handler/JpgFilter.java</file>
         </group>
     </open-files>
 </project-private>

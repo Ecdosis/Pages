@@ -169,6 +169,8 @@ public class PagesGetHandler extends GetHandler {
                 new PagesTextHandler().handle(request,response,Utils.pop(urn));
             else if (service.equals(Service.HTML) )
                 new PagesHtmlHandler().handle(request,response,Utils.pop(urn));
+            else if (service.equals(Service.ANTHOLOGY) )
+                new PagesAnthologyHandler().handle(request,response,Utils.pop(urn));
             else if (service.equals(Service.LIST) )
                 new PagesListHandler().handle(request,response,Utils.pop(urn));
             else if (service.equals(Service.URI_TEMPLATE) )
