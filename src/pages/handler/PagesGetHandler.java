@@ -1,23 +1,23 @@
 /*
- * This file is part of TILT.
+ * This file is part of Pages.
  *
- *  TILT is free software: you can redistribute it and/or modify
+ *  Pages is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 2 of the License, or
  *  (at your option) any later version.
  *
- *  TILT is distributed in the hope that it will be useful,
+ *  Pages is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with TILT.  If not, see <http://www.gnu.org/licenses/>.
- *  (c) copyright Desmond Schmidt 2014
+ *  along with Pages.  If not, see <http://www.gnu.org/licenses/>.
+ *  (c) copyright Desmond Schmidt 2015
  */
 package pages.handler;
 
-import calliope.core.handler.AeseVersion;
+import calliope.core.handler.EcdosisVersion;
 import pages.constants.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,15 +79,13 @@ public class PagesGetHandler extends GetHandler {
      * @param docid the document containing the specified page
      * @param pageid the id of the page or null
      * @param vPath the version to look for or null
-     * @param encoding the encoding of the data the page range points to
      * @return a page range object
      */
-    public PageRange getPageRange( String docid, String pageid, String vPath, 
-        String encoding ) throws PagesException
+    public PageRange getPageRange( String docid, String pageid, String vPath ) throws PagesException
     {
         try
         {
-            AeseVersion pages = doGetResourceVersion( Database.CORCODE,
+            EcdosisVersion pages = doGetResourceVersion( Database.CORCODE,
                 docid+"/pages", vPath);
             String stil = pages.getVersionString();
             JSONObject bson = (JSONObject)JSONValue.parse(stil);
@@ -126,7 +124,7 @@ public class PagesGetHandler extends GetHandler {
                             offset += len.intValue();
                     }
                 }
-                return new PageRange( offset, pageLen, encoding );
+                return new PageRange( offset, pageLen );
             }
             else
                 throw new Exception("Missing ranges in pages resource");

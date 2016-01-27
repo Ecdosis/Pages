@@ -26,10 +26,10 @@ import pages.exception.PagesException;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
+import calliope.core.constants.JSONKeys;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
-import java.io.PrintStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import calliope.core.database.Connection;
@@ -55,7 +55,27 @@ public class PagesAnthologyHandler extends PagesGetHandler
         {
             File d = new File( dir );
             if ( !d.exists() )
+            {
+                try {
+                     String[] parts = d.getAbsolutePath().split("/");
+                     StringBuilder sbs = new StringBuilder();
+                     for ( int i=0;i<parts.length;i++ )
+                     {
+                         sbs.append("/");
+                         sbs.append(parts[i]);
+                         File test = new File(sbs.toString());
+                         if ( test.exists() )
+                             System.out.println(test.getAbsolutePath()+" exists");
+                         else
+                             System.out.println(test.getAbsolutePath()+" does no exist");
+                     }
+                }
+                catch ( Exception e )
+                {
+                    System.out.println(e.getMessage());
+                }
                 throw new Exception(d.getAbsolutePath()+" does not exist");
+            }
             else if ( !d.isDirectory() )
                 throw new Exception(d.getAbsolutePath()+" is not a directory");
             else
@@ -407,6 +427,14 @@ public class PagesAnthologyHandler extends PagesGetHandler
             e.printStackTrace(System.out);
         }
     }
+    String lastPart( String docid )
+    {
+        String[] parts = docid.split("/");
+        if ( parts.length>0 )
+            return parts[parts.length-1];
+        else
+            return docid;
+    }
     /**
      * Get a list of page specifications for ms-viewer
      * @param request the http request
@@ -431,6 +459,9 @@ public class PagesAnthologyHandler extends PagesGetHandler
                 else
                 {
                     JSONObject jObj = (JSONObject)JSONValue.parse(json);
+                    String title = (String) jObj.get(JSONKeys.TITLE);
+                    if ( title == null )
+                        title = lastPart(docid);
                     JSONArray refs = (JSONArray)jObj.get("refsdecl");
                     JSONArray specials = (JSONArray)jObj.get("specials");
                     boolean alternating = (jObj.containsKey("alternating"))
@@ -455,7 +486,10 @@ public class PagesAnthologyHandler extends PagesGetHandler
                     Arrays.sort(files);
                     boolean rectoIsOdd = true; // default
                     JSONObject last = null;
+                    JSONObject wrapper = new JSONObject();
                     JSONArray dest = new JSONArray();
+                    wrapper.put("ranges",dest);
+                    wrapper.put(JSONKeys.TITLE,title);
                     for ( int i=0;i<files.length;i++ )
                     {
                         if ( i > 0 && fileNum(files[i])-fileNum(files[i-1]) > 1 )
@@ -488,7 +522,7 @@ public class PagesAnthologyHandler extends PagesGetHandler
                             dest.add( elem );
                         }
                     }
-                    spec = dest.toJSONString();
+                    spec = wrapper.toJSONString();
                 }
                 response.setContentType("application/json;charset=UTF-8");
                 response.getWriter().println(spec);

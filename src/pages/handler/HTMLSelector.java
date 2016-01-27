@@ -1,18 +1,18 @@
 /*
- * This file is part of TILT.
+ * This file is part of Pages.
  *
- *  TILT is free software: you can redistribute it and/or modify
+ *  Pages is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 2 of the License, or
  *  (at your option) any later version.
  *
- *  TILT is distributed in the hope that it will be useful,
+ *  Pages is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with TILT.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with Pages.  If not, see <http://www.gnu.org/licenses/>.
  *  (c) copyright Desmond Schmidt 2015
  */
 
@@ -32,8 +32,6 @@ import java.util.HashSet;
 public class HTMLSelector 
 {
     String src;
-    /** same as src but as encoded bytes*/
-    byte[] bytes;
     StringBuilder result;
     int offset;
     String encoding;
@@ -44,18 +42,9 @@ public class HTMLSelector
      * @param htmlDoc the HTML document
      * @param encoding its encoding
      */
-    public HTMLSelector( String htmlDoc, String encoding )
+    public HTMLSelector( String htmlDoc )
     {
         this.src = htmlDoc;
-        this.encoding = encoding;
-        try
-        {
-            this.bytes = src.getBytes(encoding);
-        }
-        catch ( Exception e )
-        {
-            this.bytes = src.getBytes();
-        }
         this.emptyTags = new HashSet<String>();
         this.emptyTags.add( "br");
         this.emptyTags.add("img");
@@ -117,49 +106,19 @@ public class HTMLSelector
         }
     }
     /**
-     * Get the byte length of a string in a particular encoding
-     * @param content the string to measure
-     * @param encoding its encoding
-     * @return its length in bytes
-     */
-    int byteLength( String content, String encoding )
-    {
-        try
-        {
-            return content.getBytes(encoding).length;
-        }
-        catch ( Exception e )
-        {
-            return content.getBytes().length;
-        }
-    }
-    /**
-     * Get a segment of a string given a byte range
+     * Get a segment of a string given a char range
      * @param content the original string
      * @param start the byte offset in content
      * @param length the byte length of content needed
-     * @param encoding the string encoding into bytes
      * @return the string segment based on its byte length
      */
-    private String byteSegment( String content, int start, int length, 
-        String encoding )
+    private String charSegment( String content, int start, int length )
     {
-        byte[] text;
-        try
-        {
-            text = content.getBytes(encoding);
-            byte[] tail = new byte[length];
-            System.arraycopy(text,start,tail,0,length);
-            return new String( tail, encoding ); 
-        }
-        catch ( Exception e )
-        {
-            //just assume default encoding
-            text = content.getBytes();
-            byte[] tail = new byte[length];
-            System.arraycopy(text,start,tail,0,length);
-            return new String( tail ); 
-        }  
+        char[] text;
+        text = content.toCharArray();
+        char[] tail = new char[length];
+        System.arraycopy(text,start,tail,0,length);
+        return new String( tail ); 
     }
     /**
      * Write out the last bit of text that overshoots the end
@@ -168,10 +127,10 @@ public class HTMLSelector
      */
     private void writeOvershoot( String content, PageRange pr )
     {
-        int contentLength = byteLength(content,pr.encoding);
+        int contentLength = content.length();
         int overshoot = contentLength+offset-pr.end();
         int rest = contentLength-overshoot;
-        String leading = byteSegment( content, 0, rest, pr.encoding );
+        String leading = charSegment( content, 0, rest );
         result.append( leading );
     }
     /**
@@ -181,10 +140,10 @@ public class HTMLSelector
      */
     private void writeUndershoot( String content, PageRange pr )
     {
-        int contentLength = byteLength(content,pr.encoding);
+        int contentLength = content.length();
         int undershoot = pr.offset-offset;
-        String leading = byteSegment( content, undershoot, 
-            contentLength-undershoot, pr.encoding );
+        String leading = charSegment( content, undershoot, 
+            contentLength-undershoot );
         result.append( leading );
     }
     /**
@@ -209,7 +168,7 @@ public class HTMLSelector
             if ( n instanceof TextNode )
             {
                 String content = n.getText();
-                int contentLength = byteLength(content,pr.encoding);
+                int contentLength = content.length();
                 if ( contentLength+offset <= pr.offset )
                     offset += contentLength;
                 else if ( result == null )
