@@ -31,7 +31,7 @@ import pages.exception.MissingDocumentException;
 import pages.exception.PagesException;
 import pages.Utils;
 import calliope.AeseFormatter;
-import calliope.exception.AeseException;
+import calliope.core.exception.CalliopeException;
 import calliope.core.URLEncoder;
 import org.json.simple.*;
 import calliope.json.JSONResponse;
@@ -48,7 +48,7 @@ public class PagesHtmlHandler extends PagesGetHandler {
      * @return the document body or null if not present
      */
     private static String getDocumentBody( String db, String docID ) 
-        throws AeseException
+        throws CalliopeException
     {
         try
         {
@@ -63,11 +63,11 @@ public class PagesHtmlHandler extends PagesGetHandler {
                         return body.toString();
                 }
             }
-            throw new AeseException("document "+db+"/"+docID+" not found");
+            throw new CalliopeException("document "+db+"/"+docID+" not found");
         }
         catch ( Exception e )
         {
-            throw new AeseException( e );
+            throw new CalliopeException( e );
         }
     }
     /**
@@ -75,7 +75,7 @@ public class PagesHtmlHandler extends PagesGetHandler {
      * @param style the path to the style in the corform database
      * @return the text of the style
      */
-    public static String fetchStyle( String style ) throws AeseException
+    public static String fetchStyle( String style ) throws CalliopeException
     {
         // 1. try to get each literal style name
         String actual = getDocumentBody(Database.CORFORM,style);
@@ -90,7 +90,7 @@ public class PagesHtmlHandler extends PagesGetHandler {
                 if ( style.length()>0 )
                     style = Utils.chomp(style);
                 else
-                    throw new AeseException("no suitable format");
+                    throw new CalliopeException("no suitable format");
             }
         }
         return actual;

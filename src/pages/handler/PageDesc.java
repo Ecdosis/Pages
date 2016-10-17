@@ -18,6 +18,7 @@
 
 package pages.handler;
 import org.json.simple.JSONObject;
+import java.awt.Dimension;
 /**
  * Description of page
  * @author desmond
@@ -25,17 +26,21 @@ import org.json.simple.JSONObject;
 public class PageDesc 
 {
     String n;
-    String id;
-    PageDesc(String n, String id )
+    String src;
+    Dimension d;
+    PageDesc(String n, String src, Dimension d )
     {
         this.n = n;
-        this.id = id;
+        this.d = d;
+        this.src = src;
     }
     public JSONObject toJSONObject()
     {
         JSONObject obj = new JSONObject();
         obj.put("n",n);
-        obj.put("id",id);
+        obj.put("width",d.width);
+        obj.put("height",d.height);
+        obj.put("src",src);
         return obj;
     }
 }

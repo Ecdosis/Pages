@@ -33,4 +33,6 @@ public class Service
     public static final String LIST = "list";
     public static final String URI_TEMPLATE = "uri_template";
     public static final String ANTHOLOGY = "anthology";
+    public static final String DIMENSIONS = "dimensions";
+    public static final String LETTER = "letter";
 }

@@ -359,7 +359,7 @@ public class PagesAnthologyHandler extends PagesGetHandler
             return null;
     }
     /**
-     * Convert the metadata shorthand refs to full representaiton
+     * Convert the metadata shorthand refs to full representation
      * @param jObj the raw page metadata
      * @return the modified object with expanded page refs
      */

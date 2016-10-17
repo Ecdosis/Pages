@@ -88,6 +88,7 @@ public class PagesWebApp extends HttpServlet
         {
             String method = req.getMethod();
             String target = req.getRequestURI();
+            //System.out.println("Handling request target="+target);
             if ( !inited )
             {
                 Enumeration params = 
@@ -123,6 +124,7 @@ public class PagesWebApp extends HttpServlet
             else
                 throw new PagesException("Unknown http method "+method);
             resp.setStatus(HttpServletResponse.SC_OK);
+            //System.out.println("Handling GET request");
             handler.handle( req, resp, target );
         }
         catch ( Exception e )
