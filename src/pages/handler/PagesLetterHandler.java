@@ -1,11 +1,25 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This file is part of Pages.
+ *
+ *  Pages is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Pages is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Pages.  If not, see <http://www.gnu.org/licenses/>.
+ *  (c) copyright Desmond Schmidt 2016
  */
+
 package pages.handler;
 
 import calliope.core.Utils;
+import calliope.core.DocType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import pages.exception.MissingDocumentException;
@@ -48,19 +62,19 @@ public class PagesLetterHandler extends PagesGetHandler
                             else if ( to == null )
                                 to = p.name;
                         }
-                        else if ( PagesListHandler.isDay(parts[i]) )
+                        else if ( DocType.isDay(parts[i]) )
                         {
                             date = Integer.toString(Integer.parseInt(parts[i]));
                         }
-                        else if ( PagesListHandler.isMonthName(parts[i]) )
+                        else if ( DocType.isMonth(parts[i]) )
                         {
                             if ( date == null )
                                 date = "";
                             else
                                 date += " ";
-                            date += PagesListHandler.months.get(parts[i]);
+                            date += DocType.getMonth(parts[i]);
                         }
-                        else if ( PagesListHandler.isYear(parts[i]) )
+                        else if ( DocType.isYear(parts[i]) )
                         {
                             if ( date == null )
                                 date = "";

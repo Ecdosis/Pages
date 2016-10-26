@@ -34,6 +34,7 @@ import java.awt.Dimension;
 import java.util.HashMap;
 import pages.PagesWebApp;
 import pages.person.Table;
+import calliope.core.DocType;
 import java.io.File;
 
 /**
@@ -42,181 +43,6 @@ import java.io.File;
  */
 public class PagesListHandler extends PagesGetHandler
 {
-    static HashMap<String,String> months;
-    static 
-    {
-        months = new HashMap<String,String>();
-        months.put("JAN","January");
-        months.put("FEB","February");
-        months.put("MAR","March");
-        months.put("APR","April");
-        months.put("MAY","May");
-        months.put("JUN","June");
-        months.put("JUL","July");
-        months.put("AUG","August");
-        months.put("SEP","September");
-        months.put("OCT","October");
-        months.put("NOV","November");
-        months.put("DEC","December");
-    }
-    public static boolean isDay( String day )
-    {
-        if ( isNumber(day) )
-        {
-            int value = Integer.parseInt(day);
-            return value > 0 && value < 32;
-        }
-        else
-            return false;
-    }
-    public static boolean isMonthName( String mon )
-    {
-        return months.containsKey( mon );
-    }
-    public static boolean isNumber(String num)
-    {
-        for ( int i=0;i<num.length();i++ )
-        {
-            if ( !Character.isDigit(num.charAt(i)) )
-                return false;
-        }
-        return true;
-    }
-    public static boolean isYear( String year )
-    {
-        if ( isNumber(year) )
-        {
-            int value = Integer.parseInt(year);
-            if ( value > 1800 && value < 2000 )
-                return true;
-            else
-                return false;
-        }
-        else
-            return false;
-    }
-    private boolean isPage( String page )
-    {
-        if ( page.startsWith("P") && page.length() > 1 )
-        {
-            String rest = page.substring(1);
-            if ( isNumber(rest) || Utils.isLcRomanNumber(rest) )
-                return true;
-            else    // mixed: must be Arabic number then letters
-            {
-                StringBuilder sb = new StringBuilder();
-                for ( int i=0;i<rest.length();i++ )
-                {
-                    if ( Character.isDigit(rest.charAt(i)))
-                        sb.append( rest.charAt(i) );
-                    else
-                        break;
-                }
-                if ( sb.length()> 0 )
-                {
-                    rest = rest.substring(sb.length());
-                    for ( int i=0;i<rest.length();i++ )
-                    {
-                        if ( !Character.isLetter(rest.charAt(i)))
-                            return false;
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    /**
-     * Check that a docid refers to a letter
-     * @param docid document identifier of a possible letter
-     * @return true if it is else false
-     * @throws PagesException 
-     */
-    private boolean docidIsLetter( String docid ) throws PagesException
-    {
-        int state = 0;
-        Table table = new Table( Utils.shortDocID(docid)+"/letters" );
-        int lastIndex = docid.lastIndexOf("/");
-        if ( lastIndex == -1 )
-            throw new PagesException("Invalid docid "+docid);
-        String last = docid.substring(lastIndex+1);
-        if ( last.contains("-") )
-        {
-            String[] parts = last.split("-");
-            for ( int i=0;i<parts.length;i++ )
-            {
-                switch ( state )
-                {
-                    case 0: // look for day
-                        if ( isDay(parts[i]) )
-                            state = 1;
-                        else if ( isMonthName(parts[i]) )
-                            state = 2;
-                        else if ( isYear(parts[i]) )
-                            state = 3;
-                        else
-                            state = -1;
-                        break;
-                    case 1: // look for month
-                        if ( isMonthName(parts[i]) )
-                            state = 2;
-                        else 
-                            state = -1;
-                        break;
-                    case 2: // look for year
-                        if ( isYear(parts[i]) )
-                            state = 3;
-                        break;
-                    case 3: // look for sender
-                        if ( table.hasPerson(parts[i]) )
-                            state = 4;
-                        else
-                            state = -1;
-                        break;
-                    case 4: // look for recipient
-                        if ( table.hasPerson(parts[i]) )
-                            state = 5;
-                        else
-                            state = -1;
-                        break;
-                }
-                if ( state == -1 )
-                    break;
-            }
-        }
-        return state != -1;
-    }
-    String buildRegex( String letter )
-    {
-        String[] parts = letter.split("-");
-        StringBuilder sb = new StringBuilder();
-        for ( int i=0;i<parts.length-2;i++ )
-        {
-            sb.append(parts[i]);
-            sb.append("-");
-        }
-        sb.append("P.+-");
-        sb.append(parts[parts.length-2]);
-        sb.append("-");
-        String last = parts[parts.length-1];
-        int index = last.lastIndexOf(".");
-        if ( index != -1 )
-            last = last.substring(0,index);
-        sb.append(last);
-        sb.append(".*");
-        return sb.toString();
-    }
-    String getPageNumber( String fName )
-    {
-        String[] parts = fName.split("-");
-        if ( parts.length > 2 )
-        {
-            String rawPNum = parts[parts.length-3];
-            if ( rawPNum.startsWith("P") )
-                return rawPNum.substring(1);
-        }
-        return "";
-    }
     String getFacs( File f )
     {
         String absPath = f.getAbsolutePath();
@@ -265,37 +91,36 @@ public class PagesListHandler extends PagesGetHandler
     }
     String getPagesFromCorpix( String docid ) throws PagesException
     {
-       int lastIndex = docid.lastIndexOf("/");
-       if ( lastIndex != -1 )
-       {
-           String letter = docid.substring(lastIndex+1);
-           String firstPart = docid.substring(0,lastIndex);
-           String path = PagesWebApp.webRoot+"/corpix/"+firstPart;
-           File dir = new File(path);
-           JSONArray list = new JSONArray();
-           if ( dir.exists() )
-           {
-               String regex = buildRegex(letter);
-               File[] files = dir.listFiles();
-               for ( int i=0;i<files.length;i++ )
-               {
-                   if ( files[i].isFile() && files[i].getName().matches(regex) )
-                   {
-                        String n = getPageNumber(files[i].getName());
-                        String facs = getFacs(files[i]);
-                        String pageId = docid;
-                        pageId += "/"+n;
-                        Dimension d = getPageDimensions(pageId,facs);
-                        if ( facs != null && n !=null )
-                        {
-                            PageDesc ps = new PageDesc(n,facs,d);
-                            list.add( ps.toJSONObject() );
-                        }
-                   }
-               }
-               sortImageList( list );
-               return list.toJSONString().replaceAll("\\\\/","/");
-           }
+        int docType = DocType.classify(docid);
+        String path = PagesWebApp.webRoot+"/corpix/"+docid;
+        File dir = new File(path);
+        while ( dir != null && !dir.exists() && !dir.isDirectory() )
+            dir = dir.getParentFile();
+        //System.out.println("searching dir "+dir.getName());
+        if ( dir != null )
+        {
+            JSONArray list = new JSONArray();
+            File[] files = dir.listFiles();
+            for ( int i=0;i<files.length;i++ )
+            {
+                String fname = files[i].getName();
+                if ( files[i].isFile() && DocType.matchFile(docid,fname,docType) )
+                {
+                     String n = DocType.getPageNo(fname,docType);
+                     String facs = getFacs(files[i]);
+                     String pageId = docid;
+                     pageId += "/"+n;
+                     Dimension d = getPageDimensions(pageId,facs);
+                     if ( facs != null && n !=null )
+                     {
+                         PageDesc ps = new PageDesc(n,facs,d);
+                         list.add( ps.toJSONObject() );
+                     }
+                }
+            }
+            //System.out.println("Found "+list.size()+" for "+docid);
+            sortImageList( list );
+            return list.toJSONString().replaceAll("\\\\/","/");
         }
         return "[]";
     }
@@ -315,7 +140,7 @@ public class PagesListHandler extends PagesGetHandler
                 System.out.println("docid="+docid+" vPath="+vPath);
                 EcdosisVersion cortex = doGetResourceVersion( Database.CORTEX,
                     docid, vPath);
-                if ( (pages.isEmpty()||cortex.isEmpty()) && docidIsLetter(docid) )
+                if ( pages==null||pages.isEmpty()||cortex.isEmpty() )
                     text = getPagesFromCorpix(docid);
                 else
                 {
