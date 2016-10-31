@@ -31,9 +31,7 @@ import pages.constants.Params;
 import pages.exception.PagesException;
 import pages.exception.MissingDocumentException;
 import java.awt.Dimension;
-import java.util.HashMap;
 import pages.PagesWebApp;
-import pages.person.Table;
 import calliope.core.DocType;
 import java.io.File;
 
@@ -47,6 +45,7 @@ public class PagesListHandler extends PagesGetHandler
     {
         String absPath = f.getAbsolutePath();
         String facs = Utils.subtractPaths( absPath, PagesWebApp.webRoot );
+        System.out.println("seeking "+absPath);
         if ( !facs.startsWith("/") )
             return "/"+facs;
         else
@@ -76,7 +75,8 @@ public class PagesListHandler extends PagesGetHandler
             {
                 int j = i;
                 JSONObject temp = (JSONObject)list.get(i);
-                while (j >= increment && compareObjs((JSONObject)list.get(j-increment),temp)>0) 
+                while (j >= increment 
+                    && compareObjs((JSONObject)list.get(j-increment),temp)>0) 
                 {
                     list.set(j,list.get(j-increment));
                     j = j - increment;
@@ -89,14 +89,21 @@ public class PagesListHandler extends PagesGetHandler
                 increment *= (5.0 / 11);
         }
     }
-    String getPagesFromCorpix( String docid ) throws PagesException
+    /**
+     * Retrieve the pages for the given docid
+     * @param docid the docid
+     * @param vid the version id starting with slash
+     * @return a JSON description of the pages of that docid
+     * @throws PagesException 
+     */
+    String getPagesFromCorpix( String docid, String vid ) throws PagesException
     {
         int docType = DocType.classify(docid);
-        String path = PagesWebApp.webRoot+"/corpix/"+docid;
+        String path = PagesWebApp.webRoot+"/corpix/"+docid+vid;
         File dir = new File(path);
         while ( dir != null && !dir.exists() && !dir.isDirectory() )
             dir = dir.getParentFile();
-        //System.out.println("searching dir "+dir.getName());
+        System.out.println("searching dir "+dir.getName());
         if ( dir != null )
         {
             JSONArray list = new JSONArray();
@@ -124,6 +131,13 @@ public class PagesListHandler extends PagesGetHandler
         }
         return "[]";
     }
+    /**
+     * Handle the http request
+     * @param request the request object
+     * @param response the response to write to
+     * @param urn the residual urn after truncation to get here
+     * @throws MissingDocumentException 
+     */
     public void handle( HttpServletRequest request, 
         HttpServletResponse response, String urn ) 
         throws MissingDocumentException
@@ -141,7 +155,7 @@ public class PagesListHandler extends PagesGetHandler
                 EcdosisVersion cortex = doGetResourceVersion( Database.CORTEX,
                     docid, vPath);
                 if ( pages==null||pages.isEmpty()||cortex.isEmpty() )
-                    text = getPagesFromCorpix(docid);
+                    text = getPagesFromCorpix(docid,stripLayer(vPath));
                 else
                 {
                     String stil = pages.getVersionString();
@@ -160,7 +174,7 @@ public class PagesListHandler extends PagesGetHandler
                             // add absolute offset
                             offset += ((Number)range.get(JSONKeys.RELOFF)).intValue();
                             range.put("offset", offset);
-                            // the actual page number
+                            // get actual page number from text
                             String n = getN(range,i,cortex).trim();
                             // the actual path to the image relative to webroot
                             String facs = getFacs(range,docid,vPath,n);

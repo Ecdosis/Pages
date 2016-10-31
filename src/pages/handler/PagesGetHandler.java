@@ -43,13 +43,18 @@ import pages.PagesWebApp;
  * @author desmond
  */
 public class PagesGetHandler extends GetHandler {
-    String bareId( String versionId )
+    /**
+     * Remove the layer spec from the vid
+     * @param vid the full version path
+     * @return a version path devoid of the layer-N component
+     */
+    String stripLayer( String vid )
     {
-        String[] parts = versionId.split("/");
-        if ( parts.length>0 )
-            return parts[0];
+        int index = vid.lastIndexOf("/layer");
+        if ( index != -1 )
+            return vid.substring(0,index);
         else
-            return versionId;
+            return vid;
     }
     /**
      * Get the facs attribute for the given range
@@ -62,6 +67,8 @@ public class PagesGetHandler extends GetHandler {
     protected String getFacs( JSONObject range, String docid, String version1, 
         String n ) throws PagesException
     {
+        System.out.println("range="+range.toJSONString()+"; docid="+docid+"; version1="+version1+"; n="+n);
+        // look for facs attribute on range (rare)
         JSONArray annotations = (JSONArray)range.get(JSONKeys.ANNOTATIONS);
         if ( annotations != null )
         {
@@ -72,17 +79,23 @@ public class PagesGetHandler extends GetHandler {
                     return (String)jobj.get(JSONKeys.FACS);
             }
         }
-        // didn't find facs attribute
+        // didn't find facs attribute - manufacture it
         try
         {
             String id = docid;
             if ( version1 != null )
             {
-                String vid = bareId(version1);
+                String vid = stripLayer(version1);
                 if ( vid.length()>0 )
-                    id += "/" + vid;
+                {
+                    if (!vid.startsWith("/") )
+                        id += "/" + vid;
+                    else
+                        id += vid;
+                }
             }
             String path = PagesWebApp.webRoot+"/corpix/"+id;
+            System.out.println("Seeking image at path "+path);
             File dir = new File(path);
             File parent = dir.getParentFile();
             String fileId = "";
@@ -122,7 +135,10 @@ public class PagesGetHandler extends GetHandler {
                 }
             }
             else
+            {
+                System.out.println("Couldn't locate "+dir.getAbsolutePath());
                 throw new Exception("Failed to locate image "+id);
+            }
         }
         catch ( Exception e )
         {
@@ -213,6 +229,7 @@ public class PagesGetHandler extends GetHandler {
             if ( d == null )    // no luck
             {
                 File src = new File(PagesWebApp.webRoot+facs);
+                System.out.println(src.getAbsolutePath());
                 if ( src.exists() )
                 {
                     BufferedImage bi = ImageIO.read(src);

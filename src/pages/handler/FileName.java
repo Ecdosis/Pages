@@ -10,7 +10,9 @@ import java.io.File;
  * @author desmond
  */
 public class FileName {
+    /** the name of the image as referred to in the editor */
     String n;
+    /** id of the document it belongs to (newspapers/letters) minus page-ref */
     String id;
     public FileName( File file )
     {
@@ -43,6 +45,11 @@ public class FileName {
             name = name.substring(0,name.lastIndexOf("."));
             while ( name.startsWith("0") )
                 name = name.substring(1);
+            id = "";
+            n = name;
+        }
+        else 
+        {
             id = "";
             n = name;
         }
