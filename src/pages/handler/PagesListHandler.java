@@ -159,7 +159,6 @@ public class PagesListHandler extends PagesGetHandler
                 else
                 {
                     String stil = pages.getVersionString();
-                    System.out.println("pages for "+vPath+"="+stil);
                     if ( pages.getMVD()!= null )
                         System.out.println(pages.getMVD().getVersionTable());
                     JSONObject bson = (JSONObject)JSONValue.parse(stil);
