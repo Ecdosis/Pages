@@ -34,6 +34,7 @@ import java.awt.Dimension;
 import pages.PagesWebApp;
 import calliope.core.DocType;
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Get a list of pages for a given document and version
@@ -132,6 +133,34 @@ public class PagesListHandler extends PagesGetHandler
         return "[]";
     }
     /**
+     * Try to get version1 by examining the corpix directory
+     * @param docid the document identfier
+     * @return the first version in the corpix directory for that docid
+     */
+    String getVersion1FromCorpix( String docid )
+    {
+        // try to get it from corpix
+        String path = PagesWebApp.webRoot+"/corpix/"+docid;
+        File dir = new File(path);
+        String version1 = "";
+        if ( dir.exists() )
+        {
+            String[] files = dir.list();
+            Arrays.sort(files);
+            for ( int i=0;i<files.length;i++ )
+            {
+                if ( files[i].startsWith(dir.getName()) )
+                {
+                    version1 = "/"+files[i];
+                    break;
+                }
+            }        
+        }
+        else
+            version1 = "";
+        return version1;
+    }
+    /**
      * Handle the http request
      * @param request the request object
      * @param response the response to write to
@@ -146,12 +175,14 @@ public class PagesListHandler extends PagesGetHandler
         {
             String docid = request.getParameter(Params.DOCID);
             String vPath = (String)request.getParameter(Params.VERSION1);
+            if ( vPath == null )
+                vPath = getVersion1FromCorpix(docid);
             String text ="[]";
             if ( docid != null )
             {
                 EcdosisVersion pages = doGetResourceVersion( Database.CORCODE,
                     docid+"/pages", vPath);
-                System.out.println("docid="+docid+" vPath="+vPath);
+                //System.out.println("docid="+docid+" vPath="+vPath);
                 EcdosisVersion cortex = doGetResourceVersion( Database.CORTEX,
                     docid, vPath);
                 if ( pages==null||pages.isEmpty()||cortex.isEmpty() )
@@ -159,8 +190,8 @@ public class PagesListHandler extends PagesGetHandler
                 else
                 {
                     String stil = pages.getVersionString();
-                    if ( pages.getMVD()!= null )
-                        System.out.println(pages.getMVD().getVersionTable());
+                    //if ( pages.getMVD()!= null )
+                    //    System.out.println(pages.getMVD().getVersionTable());
                     JSONObject bson = (JSONObject)JSONValue.parse(stil);
                     if ( bson.containsKey(JSONKeys.RANGES) )
                     {
